@@ -1,6 +1,12 @@
 # nmap-script
 IPFire 2.19 漏洞
 
-使用方法：
+以kali linux为例，下载即使用方法：
 
-git clon 
+cd /usr/share/nmap/scripts/
+
+git clon https://github.com/d3ckx1/nmap-script.git
+
+sudo nmap --script-updatedb
+
+nmap -v --script=IPFire-vuln -p 444 192.169.1.1
