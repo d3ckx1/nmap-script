@@ -5,7 +5,7 @@ IPFire 2.19 漏洞
 
 cd /usr/share/nmap/scripts/
 
-git clon https://github.com/d3ckx1/nmap-script.git
+git clone https://github.com/d3ckx1/nmap-script.git
 
 sudo nmap --script-updatedb
 
